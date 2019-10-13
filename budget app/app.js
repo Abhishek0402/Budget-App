@@ -81,11 +81,12 @@ var budgetController = (function() {
          },
 
          addListItem: function(obj, type) {
-            var html,newHtml;
+            var html,newHtml; 
              
             //create HTML strings with place holder text
 
             if(type === 'inc'){
+
              element = DOMstrings.incomeContainer;
 
 html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
@@ -96,13 +97,31 @@ html = '<div class="item clearfix" id="expense-%id%"><div class="item__descripti
    }
 
            //Replace the placeholder text with some actual data
-          newHtml = html.replace('%id', obj.id);
+          newHtml = html.replace('%id%', obj.id);
           newHtml = newHtml.replace('%description%', obj.description);
-          newHtml = newHtml.replace('%value', obj.value);
+          newHtml = newHtml.replace('%value%', obj.value);
 
             //Insert the HTML into the DOM // we are going to insert json html method
              document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
          },
+
+
+         clearFields: function() {
+             var fields,fieldsArr;
+
+         fields = document.querySelectorAll(DOMstrings.inputDescription + ',' + DOMstrings.inputValue); //this line returns a list but there is a problem as of how can we use this list as a array , so overcome this next line is writtent
+
+            //array from list also we know that array is a window or predefined object and we use its method
+        fieldsArr = Array.prototype.slice.call(fields);  //list is converted to array and so now we can loop over the array
+
+        //clear the html field
+            fieldsArr.forEach(function(current, index, array) {
+                  current.value = "";
+            });
+          fieldsArr[0].focus();
+        },
+         
+
          getDOMstrings: function(){
              return DOMstrings;
          }
@@ -139,9 +158,13 @@ html = '<div class="item clearfix" id="expense-%id%"><div class="item__descripti
          newItem =  budgetCtrl.addItem(input.type, input.description, input.value);
        //3. add the items to the ui controller
          UICtrl.addListItem(newItem, input.type);
-      //4. calculate budget
 
-      //5. display the budget(changes on the ui)
+        //4. clear the html fields after submit
+            UICtrl.clearFields();
+
+      //5 . calculate budget
+
+      //6. display the budget(changes on the ui)
       
 
     };
